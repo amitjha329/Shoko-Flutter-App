@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_android/shared_preferences_android.dart';
 import 'package:shared_preferences_foundation/shared_preferences_foundation.dart';
+import 'package:shared_preferences_windows/shared_preferences_windows.dart';
 import 'package:shoko_anime_app/apiHandler/call.dart';
 import 'package:shoko_anime_app/pages/home.dart';
 
@@ -21,11 +21,18 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
   SharedPreferences? prefs;
 
+  @override
+  void initState() {
+    super.initState();
+    getSharedPref();
+  }
+
   getSharedPref() async {
     if (Platform.isAndroid) SharedPreferencesAndroid.registerWith();
     if (Platform.isIOS || Platform.isMacOS) {
       SharedPreferencesFoundation.registerWith();
     }
+    if (Platform.isWindows) SharedPreferencesWindows.registerWith();
     prefs = await SharedPreferences.getInstance();
     serverHostController.text = prefs?.getString("serverhost") ?? "";
     serverPortController.text = prefs?.getString("serverport") ?? "";
@@ -33,7 +40,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    getSharedPref();
     return Scaffold(
       body: SingleChildScrollView(
         child: ConstrainedBox(
@@ -206,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                     behavior: SnackBarBehavior.floating));
                 return;
               }
-              ShokoApiCall()
+              ShokoApiCall("")
                   .authenticate(
                       usernameController.text, passwordController.text)
                   .then((value) => Navigator.of(context).pushReplacement(

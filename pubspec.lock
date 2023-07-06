@@ -257,7 +257,7 @@ packages:
     source: hosted
     version: "2.2.0"
   shared_preferences_windows:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shared_preferences_windows
       sha256: f95e6a43162bce43c9c3405f3eb6f39e5b5d11f65fab19196cf8225e2777624d
