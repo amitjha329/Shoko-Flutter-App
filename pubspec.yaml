@@ -40,6 +40,7 @@ dependencies:
   shared_preferences_android: ^2.2.0
   shared_preferences_foundation: ^2.3.0
   shared_preferences_windows: ^2.3.0
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,17 @@ flutter:
   assets:
     - assets/backgrounds/login_bg_desktop.png
     - assets/logo.png
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo.png"
+  windows:
+    generate: true
+    image_path: "assets/logo.png"
+  macos:
+    generate: true
+    image_path: "assets/logo.png"
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
