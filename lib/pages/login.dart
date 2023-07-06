@@ -36,6 +36,7 @@ class _LoginPageState extends State<LoginPage> {
     prefs = await SharedPreferences.getInstance();
     serverHostController.text = prefs?.getString("serverhost") ?? "";
     serverPortController.text = prefs?.getString("serverport") ?? "";
+    usernameController.text = prefs?.getString("user") ?? "";
   }
 
   @override
@@ -212,6 +213,7 @@ class _LoginPageState extends State<LoginPage> {
                     behavior: SnackBarBehavior.floating));
                 return;
               }
+              prefs?.setString("user", usernameController.text);
               ShokoApiCall("")
                   .authenticate(
                       usernameController.text, passwordController.text)

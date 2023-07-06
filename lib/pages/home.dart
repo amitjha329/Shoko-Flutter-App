@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("Dashboard"),
       ),
+      drawer: const Drawer(elevation: 20, child: Text("")),
       body: Column(
         children: [
           Card(
