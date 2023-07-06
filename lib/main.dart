@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shoko_anime_app/pages/login.dart';
-import 'colors/color_schemes.dart';
+import 'colors/color_schemes.g.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,4 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_android/shared_preferences_android.dart';
+import 'package:shared_preferences_foundation/shared_preferences_foundation.dart';
+import 'package:shoko_anime_app/apiHandler/call.dart';
+import 'package:shoko_anime_app/pages/home.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -8,8 +15,25 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _passVisibility = false;
+  TextEditingController serverPortController = TextEditingController();
+  TextEditingController serverHostController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  SharedPreferences? prefs;
+
+  getSharedPref() async {
+    if (Platform.isAndroid) SharedPreferencesAndroid.registerWith();
+    if (Platform.isIOS || Platform.isMacOS) {
+      SharedPreferencesFoundation.registerWith();
+    }
+    prefs = await SharedPreferences.getInstance();
+    serverHostController.text = prefs?.getString("serverhost") ?? "";
+    serverPortController.text = prefs?.getString("serverport") ?? "";
+  }
+
   @override
   Widget build(BuildContext context) {
+    getSharedPref();
     return Scaffold(
       body: SingleChildScrollView(
         child: ConstrainedBox(
@@ -20,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
               decoration: const BoxDecoration(
                   image: DecorationImage(
                       image:
-                          AssetImage("assets/backgrounds/login_bg_mobile.png"),
+                          AssetImage("assets/backgrounds/login_bg_desktop.png"),
                       fit: BoxFit.cover)),
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
@@ -41,6 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.all(15),
                     width: MediaQuery.of(context).size.width,
                     height: 300,
+                    constraints: const BoxConstraints(maxWidth: 700),
                     decoration: BoxDecoration(
                         border: Border.all(
                             width: 2, color: Theme.of(context).primaryColor),
@@ -55,22 +80,69 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary),
                         ),
-                        TextField(
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary),
-                          decoration: InputDecoration(
-                              label: const Text("Server Address"),
-                              hintText: "http://192.168.1.11:8111",
-                              hintStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary),
-                              labelStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12))),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                                width: (MediaQuery.of(context).size.width > 700
+                                        ? 700
+                                        : MediaQuery.of(context).size.width) -
+                                    150,
+                                child: TextField(
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary),
+                                  controller: serverHostController,
+                                  decoration: InputDecoration(
+                                      label: const Text("IP/Domain"),
+                                      hintText: "192.168.1.11",
+                                      hintStyle: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                      labelStyle: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12))),
+                                )),
+                            Text(":",
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary)),
+                            SizedBox(
+                                width: 70,
+                                child: TextField(
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary),
+                                  controller: serverPortController,
+                                  decoration: InputDecoration(
+                                      label: const Text("Port"),
+                                      hintText: "8111",
+                                      hintStyle: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                      labelStyle: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12))),
+                                )),
+                          ],
                         ),
                         TextField(
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary),
+                          controller: usernameController,
                           decoration: InputDecoration(
                               label: const Text("Username"),
                               labelStyle: TextStyle(
@@ -81,6 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                         TextField(
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary),
+                          controller: passwordController,
                           obscureText: !_passVisibility,
                           obscuringCharacter: "*",
                           decoration: InputDecoration(
@@ -115,7 +188,31 @@ class _LoginPageState extends State<LoginPage> {
         height: 50,
         margin: const EdgeInsets.all(15),
         child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              if (serverHostController.text.isNotEmpty ||
+                  serverPortController.text.isNotEmpty) {
+                prefs?.setString("serverhost", serverHostController.text);
+                prefs?.setString("serverport", serverPortController.text);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Enter Valid Host and port"),
+                    behavior: SnackBarBehavior.floating));
+                return;
+              }
+              if (usernameController.text.isEmpty ||
+                  passwordController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Username/Password cannot be empty"),
+                    behavior: SnackBarBehavior.floating));
+                return;
+              }
+              ShokoApiCall()
+                  .authenticate(
+                      usernameController.text, passwordController.text)
+                  .then((value) => Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(apiToken: value))));
+            },
             style: ButtonStyle(
                 shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12))),
