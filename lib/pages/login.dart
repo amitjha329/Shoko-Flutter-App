@@ -217,9 +217,26 @@ class _LoginPageState extends State<LoginPage> {
               ShokoApiCall("")
                   .authenticate(
                       usernameController.text, passwordController.text)
-                  .then((value) => Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(apiToken: value))));
+                  .then((value) => {
+                        if (value == "Unauthorized")
+                          {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("Wrong Username/Password")))
+                          }
+                        else if (value == null)
+                          {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Server Error")))
+                          }
+                        else
+                          {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        HomePage(apiToken: value)))
+                          }
+                      });
             },
             style: ButtonStyle(
                 shape: MaterialStatePropertyAll(RoundedRectangleBorder(

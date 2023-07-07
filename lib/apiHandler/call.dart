@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_android/shared_preferences_android.dart';
@@ -21,7 +22,7 @@ class ShokoApiCall {
     return "http://${pref.getString('serverhost') ?? 'localhost'}:${pref.getString('serverport') ?? '8111'}";
   }
 
-  Future<String> authenticate(String user, String pass) async {
+  Future<String?> authenticate(String user, String pass) async {
     String serverUri = await getServerUrl();
     Response result = await post(Uri.parse("$serverUri/api/auth"),
         headers: <String, String>{
@@ -32,8 +33,10 @@ class ShokoApiCall {
       AuthResponse authResponse =
           AuthResponse.fromJson(jsonDecode(result.body));
       return authResponse.apikey;
+    } else if (result.statusCode == 401) {
+      return "Unauthorized";
     } else {
-      throw Exception("Unable to login");
+      return null;
     }
   }
 
