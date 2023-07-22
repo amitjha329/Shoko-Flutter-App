@@ -1,4 +1,4 @@
-class StatsResponse {
+class DashStatsResponse {
   final int fileCount;
   final int seriesCount;
   final int groupCount;
@@ -14,7 +14,7 @@ class StatsResponse {
   final int episodesWithMultipleFiles;
   final int filesWithDuplicateLocations;
 
-  StatsResponse(
+  DashStatsResponse(
       this.fileCount,
       this.seriesCount,
       this.groupCount,
@@ -30,7 +30,7 @@ class StatsResponse {
       this.episodesWithMultipleFiles,
       this.filesWithDuplicateLocations);
 
-  StatsResponse.fromJson(Map<String, dynamic> json)
+  DashStatsResponse.fromJson(Map<String, dynamic> json)
       : fileCount = json['FileCount'],
         seriesCount = json['SeriesCount'],
         groupCount = json['GroupCount'],

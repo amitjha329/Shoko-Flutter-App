@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_android/shared_preferences_android.dart';
 import 'package:shared_preferences_foundation/shared_preferences_foundation.dart';
@@ -146,43 +147,51 @@ class _LoginPageState extends State<LoginPage> {
                                 )),
                           ],
                         ),
-                        TextField(
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary),
-                          controller: usernameController,
-                          decoration: InputDecoration(
-                              label: const Text("Username"),
-                              labelStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12))),
-                        ),
-                        TextField(
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary),
-                          controller: passwordController,
-                          obscureText: !_passVisibility,
-                          obscuringCharacter: "*",
-                          decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _passVisibility = !_passVisibility;
-                                    });
-                                  },
-                                  icon: Icon(
-                                    _passVisibility
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
+                        AutofillGroup(
+                            child: Column(children: [
+                          TextField(
+                            autofillHints: const [AutofillHints.username],
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary),
+                            controller: usernameController,
+                            decoration: InputDecoration(
+                                label: const Text("Username"),
+                                labelStyle: TextStyle(
                                     color:
-                                        Theme.of(context).colorScheme.primary,
-                                  )),
-                              label: const Text("Password"),
-                              labelStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12))),
-                        )
+                                        Theme.of(context).colorScheme.primary),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12))),
+                          ),
+                          const SizedBox(height: 20),
+                          TextField(
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary),
+                            controller: passwordController,
+                            obscureText: !_passVisibility,
+                            obscuringCharacter: "*",
+                            autofillHints: const [AutofillHints.password],
+                            decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _passVisibility = !_passVisibility;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      _passVisibility
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    )),
+                                label: const Text("Password"),
+                                labelStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12))),
+                          )
+                        ]))
                       ],
                     ),
                   ),
@@ -217,26 +226,19 @@ class _LoginPageState extends State<LoginPage> {
               ShokoApiCall("")
                   .authenticate(
                       usernameController.text, passwordController.text)
-                  .then((value) => {
-                        if (value == "Unauthorized")
-                          {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text("Wrong Username/Password")))
-                          }
-                        else if (value == null)
-                          {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Server Error")))
-                          }
-                        else
-                          {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        HomePage(apiToken: value)))
-                          }
-                      });
+                  .then((value) {
+                if (value == "Unauthorized") {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Wrong Username/Password")));
+                } else if (value == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Server Error")));
+                } else {
+                  TextInput.finishAutofillContext();
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => HomePage(apiToken: value)));
+                }
+              });
             },
             style: ButtonStyle(
                 shape: MaterialStatePropertyAll(RoundedRectangleBorder(

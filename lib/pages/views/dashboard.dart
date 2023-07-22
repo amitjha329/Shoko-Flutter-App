@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shoko_anime_app/pages/server_queue.dart';
 import 'package:shoko_anime_app/widgets/dash_stats_card.dart';
 
 class Dashboard extends StatefulWidget {
@@ -13,7 +14,14 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        DashStats(apiToken: widget.apiToken),
+        GestureDetector(
+            child: DashStats(apiToken: widget.apiToken),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ServerQueue(
+                        apiToken: widget.apiToken,
+                      )));
+            }),
       ],
     );
   }
