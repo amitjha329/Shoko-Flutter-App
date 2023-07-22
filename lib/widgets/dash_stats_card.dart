@@ -127,7 +127,8 @@ class _StatsState extends State<DashStats> {
                     child: SizedBox(
                         height: 100,
                         width: MediaQuery.of(context).size.width,
-                        child: const CircularProgressIndicator()),
+                        child:
+                            const Center(child: CircularProgressIndicator())),
                   );
                 })));
   }
