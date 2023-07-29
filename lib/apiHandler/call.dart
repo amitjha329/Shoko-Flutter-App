@@ -6,6 +6,7 @@ import 'package:shared_preferences_android/shared_preferences_android.dart';
 import 'package:shared_preferences_foundation/shared_preferences_foundation.dart';
 import 'package:shared_preferences_windows/shared_preferences_windows.dart';
 import 'package:shoko_anime_app/apiHandler/models/dashboard_stats_model.dart';
+import 'package:shoko_anime_app/apiHandler/models/group_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/import_folder_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/queue_summary_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/serverinfo_model.dart';
@@ -14,7 +15,7 @@ import 'models/auth_model.dart';
 class ShokoApiCall {
   ShokoApiCall(this.apikey);
   String? apikey;
-  Future<String> getServerUrl() async {
+  static Future<String> getServerUrl() async {
     if (Platform.isAndroid) SharedPreferencesAndroid.registerWith();
     if (Platform.isIOS || Platform.isMacOS) {
       SharedPreferencesFoundation.registerWith();
@@ -107,6 +108,22 @@ class ShokoApiCall {
       List<dynamic> jsonList = jsonDecode(result.body);
       List<ImportFolderModel> statsRes =
           jsonList.map((val) => ImportFolderModel.fromJson(val)).toList();
+      return statsRes;
+    } else {
+      throw Exception("Connection Failed (Code: ${result.statusCode})");
+    }
+  }
+
+  Future<GroupModel> getGroupList() async {
+    String serverUri = await getServerUrl();
+    Response result = await get(Uri.parse("$serverUri/api/v3.0/Group"),
+        headers: <String, String>{
+          'apikey': apikey ?? "",
+          'Content-Type': 'application/json; charset=UTF-8',
+          'accept': 'text/plain'
+        });
+    if (result.statusCode == 200) {
+      GroupModel statsRes = GroupModel.fromJson(jsonDecode(result.body));
       return statsRes;
     } else {
       throw Exception("Connection Failed (Code: ${result.statusCode})");
