@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_android/shared_preferences_android.dart';
 import 'package:shared_preferences_foundation/shared_preferences_foundation.dart';
 import 'package:shared_preferences_windows/shared_preferences_windows.dart';
+import 'package:shoko_anime_app/apiHandler/models/collection_overview_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/dashboard_stats_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/group_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/import_folder_model.dart';
@@ -55,6 +56,24 @@ class ShokoApiCall {
     if (result.statusCode == 200) {
       DashStatsResponse statsRes =
           DashStatsResponse.fromJson(jsonDecode(result.body));
+      return statsRes;
+    } else {
+      throw Exception("Connection Failed (Code: ${result.statusCode})");
+    }
+  }
+
+  Future<CollectionOverviewModel> getCollectionOverview() async {
+    String serverUri = await getServerUrl();
+    Response result = await get(
+        Uri.parse("$serverUri/api/v3.0/Dashboard/SeriesSummary"),
+        headers: <String, String>{
+          'apikey': apikey ?? "",
+          'Content-Type': 'application/json; charset=UTF-8',
+          'accept': 'text/plain'
+        });
+    if (result.statusCode == 200) {
+      CollectionOverviewModel statsRes =
+          CollectionOverviewModel.fromJson(jsonDecode(result.body));
       return statsRes;
     } else {
       throw Exception("Connection Failed (Code: ${result.statusCode})");

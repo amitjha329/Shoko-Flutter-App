@@ -5,6 +5,7 @@ import 'package:shoko_anime_app/apiHandler/models/serverinfo_model.dart';
 import 'package:shoko_anime_app/pages/views/dashboard.dart';
 import 'package:shoko_anime_app/pages/views/import_folders.dart';
 import 'package:shoko_anime_app/pages/views/library.dart';
+import 'package:shoko_anime_app/pages/views/utilities.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.apiToken});
@@ -24,7 +25,8 @@ class _HomePageState extends State<HomePage> {
       MapEntry(const Text("Dashboard"), Dashboard(apiToken: widget.apiToken)),
       MapEntry(const Text("Import Folders"),
           ImportFolders(apiToken: widget.apiToken)),
-      MapEntry(const Text("Library"), LibraryView(apiToken: widget.apiToken))
+      MapEntry(const Text("Library"), LibraryView(apiToken: widget.apiToken)),
+      MapEntry(const Text("Utilities"), Utilities(apiToken: widget.apiToken))
     ];
     ShokoApiCall(widget.apiToken).getServerInfo().then((value) {
       setState(() {
@@ -114,6 +116,9 @@ class _HomePageState extends State<HomePage> {
                   iconColor: Theme.of(context).colorScheme.primary,
                   title: const Text("Utilities"),
                   onTap: () {
+                    setState(() {
+                      _selectedIndex = 3;
+                    });
                     Navigator.pop(context);
                   },
                 )),

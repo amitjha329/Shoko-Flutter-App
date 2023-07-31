@@ -15,6 +15,8 @@ dependencies:
   shared_preferences_foundation: ^2.3.0
   shared_preferences_windows: ^2.3.0
   flutter_launcher_icons: ^0.13.1
+  cached_network_image: ^3.2.3
+  icons_plus: ^4.0.0
 
 dev_dependencies:
   flutter_test:

@@ -19,8 +19,9 @@ class _ImportFoldersState extends State<ImportFolders> {
         if (snapshot.hasError) {
           return const Text('Error');
         } else if (snapshot.hasData) {
-          return ListView.builder(
-              itemCount: snapshot.data?.length,
+          return ListView.separated(
+              separatorBuilder: (context, index) => const SizedBox(height: 10),
+              itemCount: snapshot.data!.length,
               padding: const EdgeInsets.all(15),
               itemBuilder: (context, index) {
                 return InkWell(

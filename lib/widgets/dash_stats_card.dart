@@ -25,7 +25,7 @@ class _StatsState extends State<DashStats> {
                 builder: (context, dataSnapShot) {
                   if (dataSnapShot.connectionState == ConnectionState.waiting) {
                     return const SizedBox(
-                        height: 70,
+                        height: 90,
                         child: Center(child: CircularProgressIndicator()));
                   } else if (dataSnapShot.connectionState ==
                           ConnectionState.active ||
@@ -100,6 +100,16 @@ class _StatsState extends State<DashStats> {
                               ),
                               Text(dataSnapShot.data!.unrecognizedFiles
                                   .toString())
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Watched Hrs.",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(dataSnapShot.data!.watchedHours.toString())
                             ],
                           )
                         ],

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shoko_anime_app/apiHandler/call.dart';
 
@@ -44,11 +45,11 @@ class _LibraryViewState extends State<LibraryView> {
                               SizedBox(
                                 height: 150,
                                 child: Card(
-                                  clipBehavior: Clip.hardEdge,
+                                  clipBehavior: Clip.antiAlias,
                                   child: Container(
                                     decoration: BoxDecoration(
                                         image: DecorationImage(
-                                            image: NetworkImage(
+                                            image: CachedNetworkImageProvider(
                                                 "${serverUrlSnapShot.data}/api/v3.0/Image/AniDB/Poster/${snapshot.data?.list?.elementAt(index).images?.posters?.elementAt(0).iD}"),
                                             fit: BoxFit.cover)),
                                   ),
