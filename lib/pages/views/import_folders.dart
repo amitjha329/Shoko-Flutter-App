@@ -10,7 +10,7 @@ class ImportFolders extends StatefulWidget {
 }
 
 class _ImportFoldersState extends State<ImportFolders> {
-  var _tapPosition;
+  late Offset _tapPosition;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -25,6 +25,30 @@ class _ImportFoldersState extends State<ImportFolders> {
               padding: const EdgeInsets.all(15),
               itemBuilder: (context, index) {
                 return InkWell(
+                    onTap: () async {
+                      final overlay = Overlay.of(context)
+                          .context
+                          .findRenderObject() as RenderBox;
+                      final result = await showMenu<String>(
+                          items: [
+                            const PopupMenuItem(
+                                value: "scan", child: Text("Scan")),
+                            const PopupMenuItem(
+                                value: "watch", child: Text("Toggle Watch")),
+                            const PopupMenuItem(
+                                value: "drop", child: Text("Drop Type"))
+                          ],
+                          context: context,
+                          position: RelativeRect.fromRect(
+                              Rect.fromLTWH(
+                                  _tapPosition.dx, _tapPosition.dy, 30, 30),
+                              Rect.fromLTWH(
+                                  0,
+                                  0,
+                                  overlay.paintBounds.size.width,
+                                  overlay.paintBounds.size.height)));
+                      switch (result) {}
+                    },
                     onLongPress: () async {
                       final overlay = Overlay.of(context)
                           .context

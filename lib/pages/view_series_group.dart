@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ViewSeriesGroupPage extends StatefulWidget {
-  const ViewSeriesGroupPage({super.key, required this.type, required this.id});
-  final String type;
+  const ViewSeriesGroupPage({super.key, required this.id});
   final String id;
   @override
   State<ViewSeriesGroupPage> createState() => _ViewSeriesGroupPageState();

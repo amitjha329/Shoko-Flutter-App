@@ -10,6 +10,7 @@ import 'package:shoko_anime_app/apiHandler/models/dashboard_stats_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/group_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/import_folder_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/queue_summary_model.dart';
+import 'package:shoko_anime_app/apiHandler/models/series_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/serverinfo_model.dart';
 import 'models/auth_model.dart';
 
@@ -143,6 +144,23 @@ class ShokoApiCall {
         });
     if (result.statusCode == 200) {
       GroupModel statsRes = GroupModel.fromJson(jsonDecode(result.body));
+      return statsRes;
+    } else {
+      throw Exception("Connection Failed (Code: ${result.statusCode})");
+    }
+  }
+
+  Future<SeriesModel> getSeriesList({int? page}) async {
+    String serverUri = await getServerUrl();
+    Response result = await get(
+        Uri.parse("$serverUri/api/v3.0/Series?page=${page ?? 1}"),
+        headers: <String, String>{
+          'apikey': apikey ?? "",
+          'Content-Type': 'application/json; charset=UTF-8',
+          'accept': 'text/plain'
+        });
+    if (result.statusCode == 200) {
+      SeriesModel statsRes = SeriesModel.fromJson(jsonDecode(result.body));
       return statsRes;
     } else {
       throw Exception("Connection Failed (Code: ${result.statusCode})");

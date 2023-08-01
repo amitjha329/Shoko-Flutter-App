@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shoko_anime_app/pages/server_queue.dart';
+import 'package:shoko_anime_app/utils/page_route_transition.dart';
 import 'package:shoko_anime_app/widgets/collection_overview.dart';
 import 'package:shoko_anime_app/widgets/dash_stats_card.dart';
 
@@ -16,7 +17,7 @@ class _DashboardState extends State<Dashboard> {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
           child: Text(
             "Collection Status",
             textAlign: TextAlign.left,
@@ -26,13 +27,12 @@ class _DashboardState extends State<Dashboard> {
         GestureDetector(
             child: DashStats(apiToken: widget.apiToken),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ServerQueue(
-                        apiToken: widget.apiToken,
-                      )));
+              Navigator.of(context).push(ScaledTransitionRoute(ServerQueue(
+                apiToken: widget.apiToken,
+              )));
             }),
         Container(
-          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
           child: Text(
             "Collection Overview",
             textAlign: TextAlign.left,
