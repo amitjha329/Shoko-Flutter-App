@@ -22,7 +22,7 @@ class LibraryList extends StatefulWidget {
 class _LibraryListState extends State<LibraryList> {
   late Offset _tapPosition;
   int pageNumber = 2;
-  int maxPages = 1;
+  int maxPages = 10;
   final ScrollController _scrollController =
       ScrollController(initialScrollOffset: 5.0);
   late List<SeriesItem> seriesList;
@@ -76,6 +76,15 @@ class _LibraryListState extends State<LibraryList> {
                   onTap: () {
                     Navigator.of(context).push(ScaledTransitionRoute(
                         ViewSeriesGroupPage(
+                            posterId: seriesList
+                                .elementAt(index)
+                                .images!
+                                .posters!
+                                .elementAt(0)
+                                .iD
+                                .toString(),
+                            apiToken: widget.apiToken,
+                            serverString: widget.serverString,
                             id: seriesList
                                 .elementAt(index)
                                 .iDs!

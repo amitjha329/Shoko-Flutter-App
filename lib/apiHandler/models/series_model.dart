@@ -249,7 +249,7 @@ class PostersFanArtsBanners {
 }
 
 class UserRating {
-  int? value;
+  double? value;
   int? maxValue;
   String? source;
   int? votes;
@@ -529,7 +529,7 @@ class AniDB {
 class Titles {
   String? name;
   String? language;
-  int? type;
+  String? type;
   bool? primary;
   String? source;
 

@@ -166,4 +166,22 @@ class ShokoApiCall {
       throw Exception("Connection Failed (Code: ${result.statusCode})");
     }
   }
+
+  Future<SeriesItem> getSeriesData({required String id}) async {
+    String serverUri = await getServerUrl();
+    Response result = await get(
+        Uri.parse(
+            "$serverUri/api/v3.0/Series/$id?includeDataFrom=AniDB&includeDataFrom=TvDB&includeDataFrom=Shoko"),
+        headers: <String, String>{
+          'apikey': apikey ?? "",
+          'Content-Type': 'application/json; charset=UTF-8',
+          'accept': 'text/plain'
+        });
+    if (result.statusCode == 200) {
+      SeriesItem statsRes = SeriesItem.fromJson(jsonDecode(result.body));
+      return statsRes;
+    } else {
+      throw Exception("Connection Failed (Code: ${result.statusCode})");
+    }
+  }
 }
