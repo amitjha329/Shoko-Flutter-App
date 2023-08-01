@@ -9,35 +9,45 @@ class Utilities extends StatelessWidget {
     return GridView(
       padding: const EdgeInsets.all(15),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 150,
-          childAspectRatio: 1,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 10),
+        maxCrossAxisExtent: 150,
+        childAspectRatio: 1,
+      ),
       children: [
         Card(
-          child: Column(
-            children: [Logo(Logos.plex), Text("Plex")],
-          ),
+          clipBehavior: Clip.hardEdge,
+          child: InkWell(
+              onTap: () {},
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    FontAwesome.list,
+                    size: 30,
+                  ),
+                  Text(
+                    "Actions",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  )
+                ],
+              )),
         ),
         Card(
-          child: Column(
-            children: [Logo(Logos.plex), Text("Plex")],
-          ),
-        ),
-        Card(
-          child: Column(
-            children: [Logo(Logos.plex), Text("Plex")],
-          ),
-        ),
-        Card(
-          child: Column(
-            children: [Logo(Logos.plex), Text("Plex")],
-          ),
-        ),
-        Card(
-          child: Column(
-            children: [Logo(Logos.plex), Text("Plex")],
-          ),
+          clipBehavior: Clip.hardEdge,
+          child: InkWell(
+              onTap: () {},
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    FontAwesome.file_circle_question,
+                    size: 30,
+                  ),
+                  Text(
+                    "Unrecognized",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  )
+                ],
+              )),
         )
       ],
     );
