@@ -15,7 +15,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  late bool saveLoginCreds;
+  bool saveLoginCreds = false;
   late Function({required String key, required dynamic value}) setSharedPrefs;
   handleSharedPreference() async {
     if (Platform.isAndroid) SharedPreferencesAndroid.registerWith();

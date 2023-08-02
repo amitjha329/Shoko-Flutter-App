@@ -16,6 +16,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _passVisibility = false;
+  bool _keepMeLoggedIn = false;
   TextEditingController serverPortController = TextEditingController();
   TextEditingController serverHostController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
@@ -24,8 +25,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    super.initState();
     getSharedPref();
+    super.initState();
   }
 
   getSharedPref() async {
@@ -38,6 +39,9 @@ class _LoginPageState extends State<LoginPage> {
     serverHostController.text = prefs?.getString("serverhost") ?? "";
     serverPortController.text = prefs?.getString("serverport") ?? "";
     usernameController.text = prefs?.getString("user") ?? "";
+    setState(() {
+      _keepMeLoggedIn = prefs?.getBool("keepMeLoggedIn") ?? false;
+    });
   }
 
   @override
@@ -64,11 +68,12 @@ class _LoginPageState extends State<LoginPage> {
                         height: 100,
                         width: 100,
                       ),
-                      Container(
+                      AutofillGroup(
+                          child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 15),
                         padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width,
-                        height: 300,
+                        height: 330,
                         constraints: const BoxConstraints(maxWidth: 700),
                         decoration: BoxDecoration(
                             border: Border.all(
@@ -149,63 +154,78 @@ class _LoginPageState extends State<LoginPage> {
                                     )),
                               ],
                             ),
-                            AutofillGroup(
-                                child: Column(children: [
-                              TextField(
-                                autofillHints: const [AutofillHints.username],
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onPrimary),
-                                controller: usernameController,
-                                decoration: InputDecoration(
-                                    label: const Text("Username"),
-                                    labelStyle: TextStyle(
+                            TextField(
+                              autofillHints: const [AutofillHints.username],
+                              style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary),
+                              controller: usernameController,
+                              decoration: InputDecoration(
+                                  label: const Text("Username"),
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12))),
+                            ),
+                            TextField(
+                              style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary),
+                              controller: passwordController,
+                              obscureText: !_passVisibility,
+                              obscuringCharacter: "*",
+                              autofillHints: const [AutofillHints.password],
+                              decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _passVisibility = !_passVisibility;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        _passVisibility
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .primary),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12))),
-                              ),
-                              const SizedBox(height: 20),
-                              TextField(
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onPrimary),
-                                controller: passwordController,
-                                obscureText: !_passVisibility,
-                                obscuringCharacter: "*",
-                                autofillHints: const [AutofillHints.password],
-                                decoration: InputDecoration(
-                                    suffixIcon: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            _passVisibility = !_passVisibility;
-                                          });
-                                        },
-                                        icon: Icon(
-                                          _passVisibility
-                                              ? Icons.visibility_off
-                                              : Icons.visibility,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        )),
-                                    label: const Text("Password"),
-                                    labelStyle: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12))),
-                              )
-                            ]))
+                                            .primary,
+                                      )),
+                                  label: const Text("Password"),
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12))),
+                            ),
+                            Row(
+                              children: [
+                                Checkbox.adaptive(
+                                  value: _keepMeLoggedIn,
+                                  onChanged: (value) {
+                                    prefs
+                                        ?.setBool("key", value ?? false)
+                                        .then((_) {
+                                      setState(() {
+                                        _keepMeLoggedIn = value ?? false;
+                                      });
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  "Keep Me Logged in",
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary),
+                                )
+                              ],
+                            )
                           ],
                         ),
-                      ),
+                      )),
                       Container(
                         height: 50,
                         margin: const EdgeInsets.all(15),
@@ -249,6 +269,9 @@ class _LoginPageState extends State<LoginPage> {
                                       const SnackBar(
                                           content: Text("Server Error")));
                                 } else {
+                                  if (_keepMeLoggedIn) {
+                                    prefs?.setString("authToken", value);
+                                  }
                                   TextInput.finishAutofillContext();
                                   Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
