@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shoko_anime_app/apiHandler/call.dart';
 import 'package:shoko_anime_app/apiHandler/models/serverinfo_model.dart';
+import 'package:shoko_anime_app/pages/settings.dart';
 import 'package:shoko_anime_app/pages/views/dashboard.dart';
 import 'package:shoko_anime_app/pages/views/import_folders.dart';
 import 'package:shoko_anime_app/pages/views/library.dart';
 import 'package:shoko_anime_app/pages/views/utilities.dart';
+import 'package:shoko_anime_app/utils/page_route_transition.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.apiToken});
@@ -134,6 +136,8 @@ class _HomePageState extends State<HomePage> {
                   title: const Text("Settings"),
                   onTap: () {
                     Navigator.pop(context);
+                    Navigator.of(context)
+                        .push(ScaledTransitionRoute(const SettingsPage()));
                   },
                 ))
               ])
