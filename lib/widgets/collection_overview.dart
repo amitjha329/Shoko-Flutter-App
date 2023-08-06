@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shoko_anime_app/apiHandler/call.dart';
+import 'package:shoko_anime_app/apiHandler/models/dashboard_stats_model.dart';
 
 class CollectionOverViewCard extends StatefulWidget {
   const CollectionOverViewCard({super.key, required this.apiToken});
@@ -11,17 +12,20 @@ class CollectionOverViewCard extends StatefulWidget {
 
 class _CollectionOverViewCardState extends State<CollectionOverViewCard> {
   int totalSeries = 1;
+  late Future<DashStatsResponse> dashStatsFuture;
 
   @override
   void initState() {
+    dashStatsFuture = ShokoApiCall(widget.apiToken).getDashboardStats();
     super.initState();
-    () async {
-      var total =
-          (await ShokoApiCall(widget.apiToken).getDashboardStats()).seriesCount;
-      setState(() {
-        totalSeries = total;
-      });
-    }();
+    getDashStats();
+  }
+
+  getDashStats() async {
+    var dashStats = await dashStatsFuture;
+    setState(() {
+      totalSeries = dashStats.seriesCount;
+    });
   }
 
   @override

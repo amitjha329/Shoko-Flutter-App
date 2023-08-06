@@ -39,7 +39,7 @@ class _LibraryListState extends State<LibraryList> {
         setState(() {
           isLoading = true;
         });
-        SeriesModel newList =
+        SeriesListModel newList =
             await ShokoApiCall(widget.apiToken).getSeriesList(page: pageNumber);
         setState(() {
           pageNumber++;

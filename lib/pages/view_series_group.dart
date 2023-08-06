@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:shoko_anime_app/apiHandler/call.dart';
 import 'package:shoko_anime_app/apiHandler/models/series_model.dart';
+import 'package:shoko_anime_app/widgets/episodes_list.dart';
 
 class ViewSeriesGroupPage extends StatefulWidget {
   const ViewSeriesGroupPage(
@@ -23,16 +24,24 @@ class _ViewSeriesGroupPageState extends State<ViewSeriesGroupPage> {
   String rating = "";
   String episodes = "";
   String votes = "";
+  late Future<SeriesItem> getSeriesDataFuture;
   @override
   void initState() {
-    ShokoApiCall(widget.apiToken).getSeriesData(id: widget.id).then((series) {
-      setState(() {
-        rating = (series.aniDB!.rating!.value! / 100).toStringAsFixed(2);
-        episodes = series.aniDB!.episodeCount.toString();
-        votes = series.aniDB!.rating!.votes!.toString();
-      });
+    setState(() {
+      getSeriesDataFuture =
+          ShokoApiCall(widget.apiToken).getSeriesData(id: widget.id);
     });
     super.initState();
+    getSeriesData();
+  }
+
+  getSeriesData() async {
+    SeriesItem series = await getSeriesDataFuture;
+    setState(() {
+      rating = (series.aniDB!.rating!.value! / 100).toStringAsFixed(2);
+      episodes = series.aniDB!.episodeCount.toString();
+      votes = series.aniDB!.rating!.votes!.toString();
+    });
   }
 
   @override
@@ -45,6 +54,7 @@ class _ViewSeriesGroupPageState extends State<ViewSeriesGroupPage> {
             title: Text("Series Details"),
           ),
           SliverFillRemaining(
+            hasScrollBody: false,
             child: Padding(
               padding: const EdgeInsets.all(15),
               child: Column(
@@ -179,11 +189,30 @@ class _ViewSeriesGroupPageState extends State<ViewSeriesGroupPage> {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
-                      })
+                      }),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Episodes",
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      const Divider(
+                        height: 30,
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),
-          )
+          ),
+          EpisodesListWidget(
+              apiToken: widget.apiToken,
+              id: widget.id,
+              serverString: widget.serverString)
         ],
       ),
     );

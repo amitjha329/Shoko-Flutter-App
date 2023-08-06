@@ -1,10 +1,10 @@
-class SeriesModel {
+class SeriesListModel {
   int? total;
   List<SeriesItem>? list;
 
-  SeriesModel({this.total, this.list});
+  SeriesListModel({this.total, this.list});
 
-  SeriesModel.fromJson(Map<String, dynamic> json) {
+  SeriesListModel.fromJson(Map<String, dynamic> json) {
     total = json['Total'];
     if (json['List'] != null) {
       list = <SeriesItem>[];

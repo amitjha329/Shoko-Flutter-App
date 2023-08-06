@@ -7,6 +7,7 @@ import 'package:shared_preferences_foundation/shared_preferences_foundation.dart
 import 'package:shared_preferences_windows/shared_preferences_windows.dart';
 import 'package:shoko_anime_app/apiHandler/models/collection_overview_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/dashboard_stats_model.dart';
+import 'package:shoko_anime_app/apiHandler/models/episode_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/group_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/import_folder_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/queue_summary_model.dart';
@@ -150,7 +151,7 @@ class ShokoApiCall {
     }
   }
 
-  Future<SeriesModel> getSeriesList({int? page}) async {
+  Future<SeriesListModel> getSeriesList({int? page}) async {
     String serverUri = await getServerUrl();
     Response result = await get(
         Uri.parse("$serverUri/api/v3.0/Series?page=${page ?? 1}"),
@@ -160,7 +161,8 @@ class ShokoApiCall {
           'accept': 'text/plain'
         });
     if (result.statusCode == 200) {
-      SeriesModel statsRes = SeriesModel.fromJson(jsonDecode(result.body));
+      SeriesListModel statsRes =
+          SeriesListModel.fromJson(jsonDecode(result.body));
       return statsRes;
     } else {
       throw Exception("Connection Failed (Code: ${result.statusCode})");
@@ -179,6 +181,25 @@ class ShokoApiCall {
         });
     if (result.statusCode == 200) {
       SeriesItem statsRes = SeriesItem.fromJson(jsonDecode(result.body));
+      return statsRes;
+    } else {
+      throw Exception("Connection Failed (Code: ${result.statusCode})");
+    }
+  }
+
+  Future<EpisodesListModel> getSeriesEpisodesList({required String id}) async {
+    String serverUri = await getServerUrl();
+    Response result = await get(
+        Uri.parse(
+            "$serverUri/api/v3.0/Series/$id/Episode?pageSize=0&page=1&includeMissing=true&includeDataFrom=AniDB&includeDataFrom=TvDB&type=Normal"),
+        headers: <String, String>{
+          'apikey': apikey ?? "",
+          'Content-Type': 'application/json; charset=UTF-8',
+          'accept': 'text/plain'
+        });
+    if (result.statusCode == 200) {
+      EpisodesListModel statsRes =
+          EpisodesListModel.fromJson(jsonDecode(result.body));
       return statsRes;
     } else {
       throw Exception("Connection Failed (Code: ${result.statusCode})");
