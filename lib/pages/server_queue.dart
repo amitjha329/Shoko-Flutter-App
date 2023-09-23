@@ -12,30 +12,6 @@ class ServerQueue extends StatefulWidget {
 }
 
 class _ServerQueState extends State<ServerQueue> {
-  Timer? timer;
-  QueueSummaryModel? queueData;
-  Future<QueueSummaryModel>? queueFutureData;
-
-  getData() async {
-    ShokoApiCall(widget.apiToken).getServerQueueSummary().then((value) {
-      setState(() {
-        queueData = value;
-      });
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    queueFutureData = ShokoApiCall(widget.apiToken).getServerQueueSummary();
-  }
-
-  @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +22,6 @@ class _ServerQueState extends State<ServerQueue> {
       body: Padding(
           padding: const EdgeInsets.all(15),
           child: StreamBuilder<QueueSummaryModel>(
-            initialData: queueData,
             stream: Stream.periodic(const Duration(seconds: 3))
                 .asyncMap((event) async {
               return ShokoApiCall(widget.apiToken).getServerQueueSummary();
