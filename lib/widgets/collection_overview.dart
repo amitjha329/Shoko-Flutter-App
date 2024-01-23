@@ -45,7 +45,8 @@ class _CollectionOverViewCardState extends State<CollectionOverViewCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text("Series"),
-                          Text((((snapshot.data?.series ?? 0) / totalSeries) *
+                          Text((((snapshot.data?.series ?? 0) /
+                                      (totalSeries > 0 ? totalSeries : 1)) *
                                   100)
                               .toStringAsFixed(2))
                         ],
@@ -56,7 +57,8 @@ class _CollectionOverViewCardState extends State<CollectionOverViewCard> {
                             minHeight: 10,
                             color: Colors.redAccent,
                             backgroundColor: Colors.grey.shade50,
-                            value: ((snapshot.data?.series ?? 0) / totalSeries),
+                            value: ((snapshot.data?.series ?? 0) /
+                                (totalSeries > 0 ? totalSeries : 1)),
                           )),
                       const SizedBox(
                         height: 15,
@@ -65,7 +67,9 @@ class _CollectionOverViewCardState extends State<CollectionOverViewCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text("OVA"),
-                          Text((((snapshot.data?.oVA ?? 0) / totalSeries) * 100)
+                          Text((((snapshot.data?.oVA ?? 0) /
+                                      (totalSeries > 0 ? totalSeries : 1)) *
+                                  100)
                               .toStringAsFixed(2))
                         ],
                       ),
@@ -75,7 +79,8 @@ class _CollectionOverViewCardState extends State<CollectionOverViewCard> {
                             minHeight: 10,
                             color: Colors.blueAccent,
                             backgroundColor: Colors.grey.shade50,
-                            value: ((snapshot.data?.oVA ?? 0) / totalSeries),
+                            value: ((snapshot.data?.oVA ?? 0) /
+                                (totalSeries > 0 ? totalSeries : 1)),
                           )),
                       const SizedBox(
                         height: 15,
@@ -84,7 +89,8 @@ class _CollectionOverViewCardState extends State<CollectionOverViewCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text("Movies"),
-                          Text((((snapshot.data?.movie ?? 0) / totalSeries) *
+                          Text((((snapshot.data?.movie ?? 0) /
+                                      (totalSeries > 0 ? totalSeries : 1)) *
                                   100)
                               .toStringAsFixed(2))
                         ],
@@ -95,7 +101,8 @@ class _CollectionOverViewCardState extends State<CollectionOverViewCard> {
                             minHeight: 10,
                             color: Colors.yellow.shade700,
                             backgroundColor: Colors.grey.shade50,
-                            value: ((snapshot.data?.movie ?? 0) / totalSeries),
+                            value: ((snapshot.data?.movie ?? 0) /
+                                (totalSeries > 0 ? totalSeries : 1)),
                           )),
                       const SizedBox(
                         height: 15,
@@ -104,7 +111,8 @@ class _CollectionOverViewCardState extends State<CollectionOverViewCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text("Other"),
-                          Text((((snapshot.data?.other ?? 0) / totalSeries) *
+                          Text((((snapshot.data?.other ?? 0) /
+                                      (totalSeries > 0 ? totalSeries : 1)) *
                                   100)
                               .toStringAsFixed(2))
                         ],
@@ -115,15 +123,14 @@ class _CollectionOverViewCardState extends State<CollectionOverViewCard> {
                             minHeight: 10,
                             color: Colors.greenAccent,
                             backgroundColor: Colors.grey.shade50,
-                            value: ((snapshot.data?.other ?? 0) / totalSeries),
+                            value: ((snapshot.data?.other ?? 0) /
+                                (totalSeries > 0 ? totalSeries : 1)),
                           ))
                     ],
                   )),
             );
           }
-          return Container(
-            child: CircularProgressIndicator(),
-          );
+          return const CircularProgressIndicator();
         });
   }
 }
