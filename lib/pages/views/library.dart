@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shoko_anime_app/apiHandler/call.dart';
 import 'package:shoko_anime_app/widgets/library_list.dart';
+import 'dart:developer';
 
 class LibraryView extends StatelessWidget {
   const LibraryView({super.key, required this.apiToken});
@@ -14,6 +15,7 @@ class LibraryView extends StatelessWidget {
         future: ShokoApiCall(apiToken).getSeriesList(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
+            log(snapshot.error.toString());
             return const Text('Error');
           } else if (snapshot.hasData) {
             return LibraryList(

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class SeriesListModel {
   int? total;
   List<SeriesItem>? list;
@@ -299,7 +301,7 @@ class Links {
 }
 
 class Sizes {
-  int? missing;
+  Missing? missing;
   int? hidden;
   FileSources? fileSources;
   Local? local;
@@ -315,7 +317,7 @@ class Sizes {
       this.total});
 
   Sizes.fromJson(Map<String, dynamic> json) {
-    missing = json['Missing'];
+    missing = Missing.fromRawJson(json['Missing']);
     hidden = json['Hidden'];
     fileSources = json['FileSources'] != null
         ? FileSources.fromJson(json['FileSources'])
@@ -327,7 +329,9 @@ class Sizes {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['Missing'] = missing;
+    if (missing != null) {
+      data['Missing'] = missing!.toJson();
+    }
     data['Hidden'] = hidden;
     if (fileSources != null) {
       data['FileSources'] = fileSources!.toJson();
@@ -629,4 +633,28 @@ class TvDB {
     }
     return data;
   }
+}
+
+class Missing {
+  int? episodes;
+  int? specials;
+
+  Missing({
+    this.episodes,
+    this.specials,
+  });
+
+  factory Missing.fromRawJson(String str) => Missing.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Missing.fromJson(Map<String, dynamic> json) => Missing(
+        episodes: json["Episodes"],
+        specials: json["Specials"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "Episodes": episodes,
+        "Specials": specials,
+      };
 }

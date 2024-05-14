@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +12,7 @@ import 'package:shoko_anime_app/apiHandler/models/episode_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/group_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/import_folder_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/queue_summary_model.dart';
+import 'package:shoko_anime_app/apiHandler/models/series_data_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/series_model.dart';
 import 'package:shoko_anime_app/apiHandler/models/serverinfo_model.dart';
 import 'models/auth_model.dart';
@@ -161,6 +163,7 @@ class ShokoApiCall {
           'accept': 'text/plain'
         });
     if (result.statusCode == 200) {
+      log(result.body);
       SeriesListModel statsRes =
           SeriesListModel.fromJson(jsonDecode(result.body));
       return statsRes;
